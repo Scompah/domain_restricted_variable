@@ -1,7 +1,5 @@
 # Domain Restricted Variable
 
----
-
 An attempt at a Dynamic Enum data type.
 
 ## Installation
