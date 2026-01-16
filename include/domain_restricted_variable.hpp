@@ -127,37 +127,31 @@ class DomainRestrictedVariable {
     //          this method has undefined behaviour
     operator value_type();
 
-    template<class value_type, class Compare>
     friend bool operator==(
         const DomainRestrictedVariable<value_type, Compare>& lhs,
         const DomainRestrictedVariable<value_type, Compare>& rhs
     );
 
-    template<class value_type, class Compare>
     friend bool operator!=(
         const DomainRestrictedVariable<value_type, Compare>& lhs,
         const DomainRestrictedVariable<value_type, Compare>& rhs
     );
 
-    template<class value_type, class Compare>
     friend bool operator<(
         const DomainRestrictedVariable<value_type, Compare>& lhs,
         const DomainRestrictedVariable<value_type, Compare>& rhs
     );
 
-    template<class value_type, class Compare>
     friend bool operator>(
         const DomainRestrictedVariable<value_type, Compare>& lhs,
         const DomainRestrictedVariable<value_type, Compare>& rhs
     );
 
-    template<class value_type, class Compare>
     friend bool std::operator<=(
         const DomainRestrictedVariable<value_type, Compare>& lhs,
         const DomainRestrictedVariable<value_type, Compare>& rhs
     );
 
-    template<class value_type, class Compare>
     friend bool std::operator>=(
         const DomainRestrictedVariable<value_type, Compare>& lhs,
         const DomainRestrictedVariable<value_type, Compare>& rhs
