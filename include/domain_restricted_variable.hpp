@@ -147,12 +147,12 @@ class DomainRestrictedVariable {
         const DomainRestrictedVariable<value_type, Compare>& rhs
     );
 
-    friend bool std::operator<=(
+    friend bool operator<=(
         const DomainRestrictedVariable<value_type, Compare>& lhs,
         const DomainRestrictedVariable<value_type, Compare>& rhs
     );
 
-    friend bool std::operator>=(
+    friend bool operator>=(
         const DomainRestrictedVariable<value_type, Compare>& lhs,
         const DomainRestrictedVariable<value_type, Compare>& rhs
     );
