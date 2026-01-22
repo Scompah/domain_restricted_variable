@@ -35,4 +35,4 @@ Note that a DomainRestrictedVariable always needs a compatible VariableDomain, a
 
  - When you have a limited number of objects you want to use and only those objects
  - When you need to restrict a variable to certain values, but offer the possibility of changing them at run-time
- - It offers a simple interface for the aforementioned use cases
+ - It offers a simple interface for the such use cases
