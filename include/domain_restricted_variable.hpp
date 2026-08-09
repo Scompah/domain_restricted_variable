@@ -176,83 +176,83 @@ class DomainRestrictedVariable {
 
     friend inline bool operator==(
         const DomainRestrictedVariable &lhs,
-        value_type&& rhs
+        const value_type& rhs
     ) {
         return lhs.has_value() && Compare()(lhs.value(), rhs) == Compare()(rhs, lhs.value());
     }
 
     friend inline bool operator!=(
         const DomainRestrictedVariable &lhs,
-        value_type&& rhs
+        const value_type& rhs
     ) {
         return !(lhs == rhs);
     }
 
     friend inline bool operator<(
         const DomainRestrictedVariable &lhs,
-        value_type&& rhs
+        const value_type& rhs
     ) {
         return lhs.has_value() && Compare()(lhs.value(), rhs);
     }
 
     friend inline bool operator>(
         const DomainRestrictedVariable &lhs,
-        value_type&& rhs
+        const value_type& rhs
     ) {
         return rhs < lhs;
     }
 
     friend inline bool operator<=(
         const DomainRestrictedVariable &lhs,
-        value_type&& rhs
+        const value_type& rhs
     ) {
         return !(lhs > rhs);
     }
 
     friend inline bool operator>=(
         const DomainRestrictedVariable &lhs,
-        value_type&& rhs
+        const value_type& rhs
     ) {
         return !(lhs < rhs);
     }
 
     friend inline bool operator==(
-        value_type&& lhs,
+        const value_type& lhs,
         const DomainRestrictedVariable &rhs
     ) {
         return rhs.has_value() && Compare()(lhs, rhs.value()) == Compare()(rhs.value(), lhs);
     }
 
     friend inline bool operator!=(
-        value_type&& lhs,
+        const value_type& lhs,
         const DomainRestrictedVariable &rhs
     ) {
         return !(lhs == rhs);
     }
 
     friend inline bool operator<(
-        value_type&& lhs,
+        const value_type& lhs,
         const DomainRestrictedVariable &rhs
     ) {
         return rhs.has_value() && Compare()(lhs, rhs.value());
     }
 
     friend inline bool operator>(
-        value_type&& lhs,
+        const value_type& lhs,
         const DomainRestrictedVariable &rhs
     ) {
         return rhs < lhs;
     }
 
     friend inline bool operator<=(
-        value_type&& lhs,
+        const value_type& lhs,
         const DomainRestrictedVariable &rhs
     ) {
         return !(lhs > rhs);
     }
 
     friend inline bool operator>=(
-        value_type&& lhs,
+        const value_type& lhs,
         const DomainRestrictedVariable &rhs
     ) {
         return !(lhs < rhs);
