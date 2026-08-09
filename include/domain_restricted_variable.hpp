@@ -51,6 +51,9 @@ class VariableDomain {
     const_reverse_iterator rend() const;
     const_reverse_iterator crend() const;
 
+    int size() const;
+    bool empty() const;
+
     //Check
     bool isAllowedValue(const value_type& value) const;
 #if __cplusplus >= 201402L
@@ -347,6 +350,16 @@ typename VariableDomain<value_type, Compare>::const_reverse_iterator
     VariableDomain<value_type, Compare>::crend() const
 {
     return m_allowed_values.crend();
+}
+
+template<class value_type, class Compare>
+bool VariableDomain<value_type, Compare>::empty() const {
+    return m_allowed_values.empty();
+}
+
+template<class value_type, class Compare>
+int VariableDomain<value_type, Compare>::size() const {
+    return m_allowed_values.size();
 }
 
 //VariableDomain::ExistanceCheck
