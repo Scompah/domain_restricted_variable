@@ -4,7 +4,8 @@ An attempt at a Dynamic Enum data type.
 
 ## Installation
 
-It's a header-only library, so just add the header file to your project and you're set (it's literally one file).
+It's a header-only library, so just add the header file to your project and you're set (it's literally one file).  
+Requires at least C++11.
 
 ## Usage
 
