@@ -91,10 +91,8 @@ class VariableDomain {
     std::set<
         DomainRestrictedVariable<value_type, Compare>*> m_managed_variables;
 
-    void subscribeVariable(
-        const DomainRestrictedVariable<value_type, Compare>* const ptr);
-    void unsubscribeVariable(
-        const DomainRestrictedVariable<value_type, Compare>* const ptr);
+    void subscribeVariable(DomainRestrictedVariable<value_type, Compare>* ptr);
+    void unsubscribeVariable(DomainRestrictedVariable<value_type, Compare>* ptr);
 
     void deletionNotice(value_type* to_delete);
     void replacementNotice(value_type* to_replace, value_type* replacement);
@@ -373,14 +371,14 @@ bool VariableDomain<value_type, Compare>::replaceAllowedValue(
 //VariableDomain::PrivateSection::SubscriptionManagement
 template<class value_type, class Compare>
 void VariableDomain<value_type, Compare>::subscribeVariable(
-    const DomainRestrictedVariable<value_type, Compare>* const ptr
+    DomainRestrictedVariable<value_type, Compare>* ptr
 ) {
     m_managed_variables.insert(ptr);
 }
 
 template<class value_type, class Compare>
 void VariableDomain<value_type, Compare>::unsubscribeVariable(
-    const DomainRestrictedVariable<value_type, Compare>* const ptr
+    DomainRestrictedVariable<value_type, Compare>* ptr
 ) {
     m_managed_variables.erase(ptr);
 }
