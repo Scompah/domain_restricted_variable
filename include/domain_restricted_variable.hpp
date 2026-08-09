@@ -123,9 +123,11 @@ class DomainRestrictedVariable {
     void clear();
     bool has_value() const;
 
+    const value_type& value() const;
+
     //WARNING:  If the variable is uninitialized or cleared
     //          this method has undefined behaviour
-    operator value_type();
+    operator const value_type&() const;
 
     friend bool operator==(
         const DomainRestrictedVariable<value_type, Compare>& lhs,
@@ -477,7 +479,12 @@ bool DomainRestrictedVariable<value_type, Compare>::has_value() const {
 }
 
 template<class value_type, class Compare>
-DomainRestrictedVariable<value_type, Compare>::operator value_type() {
+const value_type& DomainRestrictedVariable<value_type, Compare>::value() const {
+    return *m_value;
+}
+
+template<class value_type, class Compare>
+DomainRestrictedVariable<value_type, Compare>::operator const value_type&() const {
     return *m_value;
 }
 
