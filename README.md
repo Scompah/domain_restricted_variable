@@ -27,13 +27,13 @@ Note that a DomainRestrictedVariable always needs a compatible VariableDomain, a
 
 ### Actual Usage
 
- 1. Declare a VariableDomain of any type
- 2. Fill it with values (or not)
- 3. Declare any number of DomainRestrictedVariable(s) with the same template parameters
- 4. Modify which values are inside which variables to your liking/to satisfy your needs
+ 1. Declare a VariableDomain of any type;
+ 2. Fill it with values (or not);
+ 3. Declare any number of DomainRestrictedVariable(s) with the same template parameters;
+ 4. Modify which values are inside which variables to your liking/to satisfy your needs;
 
 ## Why would you want to use this?
 
- - When you have a limited number of objects you want to use and only those objects
- - When you need to restrict a variable to certain values, but offer the possibility of changing them at run-time
- - It offers a simple interface for the above use cases
+ - When you have a limited number of objects you want to use and only those objects;
+ - When you need to restrict a variable to certain values, but offer the possibility of changing them at run-time;
+ - It offers a simple interface for the above use cases.
