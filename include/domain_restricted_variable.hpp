@@ -313,7 +313,7 @@ bool VariableDomain<value_type, Compare>::removeAllowedValue(
         return false;
     }
 
-    deletionNotice(iter);
+    deletionNotice(&(*iter));
     m_allowed_values.erase(iter);
     return true;
 }
@@ -339,7 +339,7 @@ bool VariableDomain<value_type, Compare>::replaceAllowedValue(
 
     auto pair = m_allowed_values.insert(replacement);
 
-    replacementNotice(iter, pair.first);
+    replacementNotice(&(*iter), &(*pair.first));
 
     m_allowed_values.erase(iter);
     return true;
@@ -357,7 +357,7 @@ bool VariableDomain<value_type, Compare>::replaceAllowedValue(
 
     auto pair = m_allowed_values.insert(std::forward(replacement));
 
-    replacementNotice(iter, pair.first);
+    replacementNotice(&(*iter), &(*pair.first));
 
     m_allowed_values.erase(iter);
     return true;
@@ -426,9 +426,9 @@ DomainRestrictedVariable<value_type, Compare>::DomainRestrictedVariable(
     DomainRestrictedVariable&& other
 ): m_domain(other.m_domain), m_value(other.m_value)
 {
-    other.clear();
     m_domain.get().unsubscribeVariable(&other);
     m_domain.get().subscribeVariable(this);
+    other.clear();
 }
 
 template<class value_type, class Compare>
