@@ -4,8 +4,9 @@ A dynamic enum-like data type
 
 ## Installation
 
-It's a header-only library, just add the header to your project
-Requires at least C++11.
+It's a header-only library, just add the header to your project.
+
+Requires at least C++11. Also supports C++14 heterogeneous data lookup.
 
 ## Usage
 
