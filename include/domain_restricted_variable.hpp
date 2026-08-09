@@ -512,7 +512,7 @@ template<class value_type, class Compare>
 DomainRestrictedVariable<value_type, Compare>::DomainRestrictedVariable(
     VariableDomain<value_type, Compare>& domain,
     const value_type& value
-): m_domain(domain), m_value(domain.find(value))
+): m_domain(domain), m_value(&(*domain.m_allowed_values.find(value)))
 {
     m_domain.get().subscribeVariable(this);
 }
@@ -520,7 +520,7 @@ DomainRestrictedVariable<value_type, Compare>::DomainRestrictedVariable(
 template<class value_type, class Compare>
 DomainRestrictedVariable<value_type, Compare>::DomainRestrictedVariable(
     VariableDomain<value_type, Compare>& domain
-): m_domain(domain), m_value(domain.m_allowed_values.end())
+): m_domain(domain), m_value(nullptr)
 {
     m_domain.get().subscribeVariable(this);
 }
