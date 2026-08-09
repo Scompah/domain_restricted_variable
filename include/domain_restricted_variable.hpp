@@ -159,7 +159,7 @@ class DomainRestrictedVariable {
 
     private:
     std::reference_wrapper<VariableDomain<value_type, Compare>> m_domain;
-    value_type* m_value;
+    const value_type* m_value;
 
     void deletionNotice(value_type* to_delete);
     void replacementNotice(value_type* to_replace, value_type* replacement);
