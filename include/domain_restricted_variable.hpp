@@ -127,35 +127,133 @@ class DomainRestrictedVariable {
     //          this method has undefined behaviour
     operator const value_type&() const;
 
-    friend bool operator==(
-        const DomainRestrictedVariable<value_type, Compare>& lhs,
-        const DomainRestrictedVariable<value_type, Compare>& rhs
-    );
+    friend inline bool operator==(
+        const DomainRestrictedVariable &lhs,
+        const DomainRestrictedVariable &rhs
+    ) {
+        return &lhs.m_domain.get() == &rhs.m_domain.get() && lhs.m_value == rhs.m_value;
+    }
 
-    friend bool operator!=(
-        const DomainRestrictedVariable<value_type, Compare>& lhs,
-        const DomainRestrictedVariable<value_type, Compare>& rhs
-    );
+    friend inline bool operator!=(
+        const DomainRestrictedVariable &lhs,
+        const DomainRestrictedVariable &rhs
+    ) {
+        return !(lhs == rhs);
+    }
 
-    friend bool operator<(
-        const DomainRestrictedVariable<value_type, Compare>& lhs,
-        const DomainRestrictedVariable<value_type, Compare>& rhs
-    );
+    friend inline bool operator<(
+        const DomainRestrictedVariable &lhs,
+        const DomainRestrictedVariable &rhs
+    ) {
+        return &lhs.m_domain.get() == &rhs.m_domain.get()
+            && lhs.has_value() == rhs.has_value()
+            && (!lhs.has_value() || Compare()(lhs.value(), rhs.value()));
+    }
 
-    friend bool operator>(
-        const DomainRestrictedVariable<value_type, Compare>& lhs,
-        const DomainRestrictedVariable<value_type, Compare>& rhs
-    );
+    friend inline bool operator>(
+        const DomainRestrictedVariable &lhs,
+        const DomainRestrictedVariable &rhs
+    ) {
+        return rhs < lhs;
+    }
 
-    friend bool operator<=(
-        const DomainRestrictedVariable<value_type, Compare>& lhs,
-        const DomainRestrictedVariable<value_type, Compare>& rhs
-    );
+    friend inline bool operator<=(
+        const DomainRestrictedVariable &lhs,
+        const DomainRestrictedVariable &rhs
+    ) {
+        return !(lhs > rhs);
+    }
 
-    friend bool operator>=(
-        const DomainRestrictedVariable<value_type, Compare>& lhs,
-        const DomainRestrictedVariable<value_type, Compare>& rhs
-    );
+    friend inline bool operator>=(
+        const DomainRestrictedVariable &lhs,
+        const DomainRestrictedVariable &rhs
+    ) {
+        return !(lhs < rhs);
+    }
+
+    friend inline bool operator==(
+        const DomainRestrictedVariable &lhs,
+        value_type&& rhs
+    ) {
+        return lhs.has_value() && Compare()(lhs.value(), rhs) == Compare()(rhs, lhs.value());
+    }
+
+    friend inline bool operator!=(
+        const DomainRestrictedVariable &lhs,
+        value_type&& rhs
+    ) {
+        return !(lhs == rhs);
+    }
+
+    friend inline bool operator<(
+        const DomainRestrictedVariable &lhs,
+        value_type&& rhs
+    ) {
+        return lhs.has_value() && Compare()(lhs.value(), rhs);
+    }
+
+    friend inline bool operator>(
+        const DomainRestrictedVariable &lhs,
+        value_type&& rhs
+    ) {
+        return rhs < lhs;
+    }
+
+    friend inline bool operator<=(
+        const DomainRestrictedVariable &lhs,
+        value_type&& rhs
+    ) {
+        return !(lhs > rhs);
+    }
+
+    friend inline bool operator>=(
+        const DomainRestrictedVariable &lhs,
+        value_type&& rhs
+    ) {
+        return !(lhs < rhs);
+    }
+
+    friend inline bool operator==(
+        value_type&& lhs,
+        const DomainRestrictedVariable &rhs
+    ) {
+        return rhs.has_value() && Compare()(lhs, rhs.value()) == Compare()(rhs.value(), lhs);
+    }
+
+    friend inline bool operator!=(
+        value_type&& lhs,
+        const DomainRestrictedVariable &rhs
+    ) {
+        return !(lhs == rhs);
+    }
+
+    friend inline bool operator<(
+        value_type&& lhs,
+        const DomainRestrictedVariable &rhs
+    ) {
+        return rhs.has_value() && Compare()(lhs, rhs.value());
+    }
+
+    friend inline bool operator>(
+        value_type&& lhs,
+        const DomainRestrictedVariable &rhs
+    ) {
+        return rhs < lhs;
+    }
+
+    friend inline bool operator<=(
+        value_type&& lhs,
+        const DomainRestrictedVariable &rhs
+    ) {
+        return !(lhs > rhs);
+    }
+
+    friend inline bool operator>=(
+        value_type&& lhs,
+        const DomainRestrictedVariable &rhs
+    ) {
+        return !(lhs < rhs);
+    }
 
     private:
     std::reference_wrapper<VariableDomain<value_type, Compare>> m_domain;
@@ -500,55 +598,6 @@ const value_type& DomainRestrictedVariable<value_type, Compare>::value() const {
 template<class value_type, class Compare>
 DomainRestrictedVariable<value_type, Compare>::operator const value_type&() const {
     return *m_value;
-}
-
-//DomainRestrictedVariable::Comparison
-template<class value_type, class Compare>
-bool operator==(
-    const DomainRestrictedVariable<value_type, Compare>& lhs,
-    const DomainRestrictedVariable<value_type, Compare>& rhs
-) {
-    return Compare()(lhs, rhs) == Compare()(rhs, lhs);
-}
-
-template<class value_type, class Compare>
-bool operator!=(
-    const DomainRestrictedVariable<value_type, Compare>& lhs,
-    const DomainRestrictedVariable<value_type, Compare>& rhs
-) {
-    return !(lhs == rhs);
-}
-
-template<class value_type, class Compare>
-bool operator<(
-    const DomainRestrictedVariable<value_type, Compare>& lhs,
-    const DomainRestrictedVariable<value_type, Compare>& rhs
-) {
-    return Compare()(lhs, rhs);
-}
-
-template<class value_type, class Compare>
-bool operator>(
-    const DomainRestrictedVariable<value_type, Compare>& lhs,
-    const DomainRestrictedVariable<value_type, Compare>& rhs
-) {
-    return rhs < lhs;
-}
-
-template<class value_type, class Compare>
-bool operator<=(
-    const DomainRestrictedVariable<value_type, Compare>& lhs,
-    const DomainRestrictedVariable<value_type, Compare>& rhs
-) {
-    return !(lhs > rhs);
-}
-
-template<class value_type, class Compare>
-bool operator>=(
-    const DomainRestrictedVariable<value_type, Compare>& lhs,
-    const DomainRestrictedVariable<value_type, Compare>& rhs
-) {
-    return !(lhs < rhs);
 }
 
 //DomainRestrictedVariable::PrivateSecction::Notices
