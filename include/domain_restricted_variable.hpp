@@ -466,6 +466,12 @@ bool VariableDomain<value_type, Compare>::replaceAllowedValue(
     return true;
 }
 
+//VariableDomain::Retrieval
+template<class value_type, class Compare>
+std::vector<value_type> VariableDomain<value_type, Compare>::allowedValues() const {
+    return {m_allowed_values.begin(), m_allowed_values.end()};
+}
+
 //VariableDomain::PrivateSection::SubscriptionManagement
 template<class value_type, class Compare>
 void VariableDomain<value_type, Compare>::subscribeVariable(
