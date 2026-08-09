@@ -168,6 +168,7 @@ class DomainRestrictedVariable {
 };
 
 
+//VariableDomain::Constructors
 template<class value_type, class Compare>
 VariableDomain<value_type, Compare>::VariableDomain(
     std::initializer_list<value_type> ilist,
@@ -186,6 +187,7 @@ VariableDomain<value_type, Compare>::VariableDomain(
     const Compare& comp
 ): m_allowed_values(first, last, comp), m_managed_variables() {}
 
+//VariableDomain::Destructor
 template<class value_type, class Compare>
 VariableDomain<value_type, Compare>::~VariableDomain() noexcept(false) {
     if(!m_managed_variables.empty()) {
@@ -194,6 +196,7 @@ VariableDomain<value_type, Compare>::~VariableDomain() noexcept(false) {
     }
 }
 
+//VariableDomain::Iterators
 template<class value_type, class Compare>
 typename VariableDomain<value_type, Compare>::const_iterator
     VariableDomain<value_type, Compare>::begin() const
@@ -250,6 +253,7 @@ typename VariableDomain<value_type, Compare>::const_reverse_iterator
     return m_allowed_values.crend();
 }
 
+//VariableDomain::ExistanceCheck
 template<class value_type, class Compare>
 bool VariableDomain<value_type, Compare>::isAllowedValue(
     const value_type& value
@@ -267,6 +271,7 @@ bool VariableDomain<value_type, Compare>::isAllowedValue(
 }
 #endif
 
+//VariableDomain::Addition
 template<class value_type, class Compare>
 bool VariableDomain<value_type, Compare>::addAllowedValue(
     const value_type& value
@@ -304,6 +309,7 @@ bool VariableDomain<value_type, Compare>::emplaceAllowedValue(
     return m_allowed_values.emplace(std::forward(args)...);
 }
 
+//VariableDomain::Removal
 template<class value_type, class Compare>
 bool VariableDomain<value_type, Compare>::removeAllowedValue(
     const value_type& value
@@ -327,6 +333,7 @@ void VariableDomain<value_type, Compare>::removeAllowedValues(
     }
 }
 
+//VariableDomain::Replacement
 template<class value_type, class Compare>
 bool VariableDomain<value_type, Compare>::replaceAllowedValue(
     const value_type& to_replace,
@@ -363,6 +370,7 @@ bool VariableDomain<value_type, Compare>::replaceAllowedValue(
     return true;
 }
 
+//VariableDomain::PrivateSection::SubscriptionManagement
 template<class value_type, class Compare>
 void VariableDomain<value_type, Compare>::subscribeVariable(
     const DomainRestrictedVariable<value_type, Compare>* const ptr
@@ -377,6 +385,7 @@ void VariableDomain<value_type, Compare>::unsubscribeVariable(
     m_managed_variables.erase(ptr);
 }
 
+//VariableDomain::PrivateSection::Notices
 template<class value_type, class Compare>
 void VariableDomain<value_type, Compare>::deletionNotice(
     value_type* to_delete
@@ -396,6 +405,7 @@ void VariableDomain<value_type, Compare>::replacementNotice(
     }
 }
 
+//DomainRestrictedVariable::Constructors
 template<class value_type, class Compare>
 DomainRestrictedVariable<value_type, Compare>::DomainRestrictedVariable(
     VariableDomain<value_type, Compare>& domain,
@@ -431,11 +441,13 @@ DomainRestrictedVariable<value_type, Compare>::DomainRestrictedVariable(
     other.clear();
 }
 
+//DomainRestrictedVariable::Destructor
 template<class value_type, class Compare>
 DomainRestrictedVariable<value_type, Compare>::~DomainRestrictedVariable() {
     m_domain.get().unsubscribeVariable(this);
 }
 
+//DomainRestrictedVariable::Assignment
 template<class value_type, class Compare>
 DomainRestrictedVariable<value_type, Compare>&
     DomainRestrictedVariable<value_type, Compare>::operator=(
@@ -468,26 +480,31 @@ DomainRestrictedVariable<value_type, Compare>&
     m_value = m_domain.get().m_allowed_values.find(value);
 }
 
+//DomainRestrictedVariable::Clearing
 template<class value_type, class Compare>
 void DomainRestrictedVariable<value_type, Compare>::clear() {
     m_value = nullptr;
 }
 
+//DomainRestrictedVariable::ValueCheck
 template<class value_type, class Compare>
 bool DomainRestrictedVariable<value_type, Compare>::has_value() const {
     return m_value != nullptr;
 }
 
+//DomainRestrictedVariable::ValueRetrieval
 template<class value_type, class Compare>
 const value_type& DomainRestrictedVariable<value_type, Compare>::value() const {
     return *m_value;
 }
 
+//DomainRestrictedVariable::ValueRetrieval(operator)
 template<class value_type, class Compare>
 DomainRestrictedVariable<value_type, Compare>::operator const value_type&() const {
     return *m_value;
 }
 
+//DomainRestrictedVariable::Comparison
 template<class value_type, class Compare>
 bool operator==(
     const DomainRestrictedVariable<value_type, Compare>& lhs,
@@ -536,6 +553,7 @@ bool operator>=(
     return !(lhs < rhs);
 }
 
+//DomainRestrictedVariable::PrivateSecction::Notices
 template<class value_type, class Compare>
 void DomainRestrictedVariable<value_type, Compare>::deletionNotice(
     value_type* to_delete
