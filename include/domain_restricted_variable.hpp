@@ -21,6 +21,20 @@ template<class value_type>
 class DomainRestrictedVariable;
 
 template<class value_type>
+class VariableDomain;
+
+template<class value_type>
+bool operator==(
+    const VariableDomain<value_type>& lhs,
+    const VariableDomain<value_type>& rhs
+);
+template<class value_type>
+bool operator!=(
+    const VariableDomain<value_type>& lhs,
+    const VariableDomain<value_type>& rhs
+);
+
+template<class value_type>
 class VariableDomain {
     private:
     friend class DomainRestrictedVariable<value_type>;
@@ -91,6 +105,13 @@ class VariableDomain {
     std::vector<value_type> values() const;
     std::vector<std::pair<STRING_TYPE, value_type>> valueNamePairs() const;
 
+    friend bool operator== <value_type>(
+        const VariableDomain&, const VariableDomain&
+    );
+    friend bool operator!= <value_type>(
+        const VariableDomain&, const VariableDomain&
+    );
+
     private:
     storage_type m_allowed_values;
 
@@ -149,7 +170,7 @@ class DomainRestrictedVariable {
     ~DomainRestrictedVariable();
 
     DomainRestrictedVariable& operator=(const DomainRestrictedVariable& other);
-    DomainRestrictedVariable& operator=(const DomainRestrictedVariable&& other);
+    DomainRestrictedVariable& operator=(DomainRestrictedVariable&& other);
     DomainRestrictedVariable& operator=(const STRING_TYPE& value_name);
 
     void clear();
@@ -181,10 +202,10 @@ class DomainRestrictedVariable {
     private:
     friend class VariableDomain<value_type>;
     std::reference_wrapper<VariableDomain<value_type>> m_domain;
-    const value_type* m_value;
+    std::string m_value;
 
-    void deletionNotice(value_type* to_delete);
-    void replacement_notice(value_type* to_replace, value_type* replacement);
+    void deletionNotice(std::string to_delete);
+    void replacement_notice(std::string to_replace, std::string replacement);
 };
 
 //VariableDomain::Constructor
@@ -409,6 +430,22 @@ std::vector<std::pair<STRING_TYPE, value_type>> VariableDomain<value_type>::valu
     return temp;
 }
 
+template<class value_type>
+bool operator==(
+    const VariableDomain<value_type>& lhs,
+    const VariableDomain<value_type>& rhs
+) {
+    return &(lhs.m_allowed_values) == &(rhs.m_allowed_values);
+}
+
+template<class value_type>
+bool operator!=(
+    const VariableDomain<value_type>& lhs,
+    const VariableDomain<value_type>& rhs
+) {
+    return !(lhs == rhs);
+}
+
 //VariableDomain::Private
 template<class value_type>
 void VariableDomain<value_type>::subscribeVariable(
@@ -438,6 +475,180 @@ void VariableDomain<value_type>::replacement_notice(
     for(auto& var : m_managed_variables) {
         var->replacementNotice(to_replace, replacement);
     }
+}
+
+//DomainRestrictedVariable::Constructors
+template<class value_type>
+DomainRestrictedVariable<value_type>::DomainRestrictedVariable(
+    VariableDomain<value_type>& domain,
+    const STRING_TYPE& value_name
+):
+    m_domain(domain),
+    m_value(
+        domain.m_allowed_values.find(value_name) == domain.m_allowed_values.end()
+        ? throw std::invalid_argument("Tried to assign to a DomainRestrictedVariable a value not in its domain.\n")
+        : value_name
+    )
+{
+    m_domain.get().subscribeVariable(this);
+}
+
+template<class value_type>
+DomainRestrictedVariable<value_type>::DomainRestrictedVariable(
+    VariableDomain<value_type>& domain
+):
+    m_domain(domain),
+    m_value(nullptr)
+{
+    m_domain.get().subscribeVariable(this);
+}
+
+template<class value_type>
+DomainRestrictedVariable<value_type>::DomainRestrictedVariable(
+    const DomainRestrictedVariable<value_type>& other
+):
+    m_domain(other.m_domain),
+    m_value(other.m_value)
+{
+    m_domain.get().subscribeVariable(this);
+}
+
+template<class value_type>
+DomainRestrictedVariable<value_type>::DomainRestrictedVariable(
+    DomainRestrictedVariable<value_type>&& other
+):
+    m_domain(std::move(other.m_domain)),
+    m_value(std::move(other.m_value))
+{
+    m_domain.get().unsubscribeVariable(&other);
+    other.m_value.clear();
+    m_domain.get().subscribeVariable(this);
+}
+
+//DomainRestrictedVariable::Destructor
+template<class value_type>
+DomainRestrictedVariable<value_type>::~DomainRestrictedVariable() {
+    m_domain.get().unsubscribeVariable(this);
+}
+
+//DomainRestrictedVariable::Assignment_Operator
+template<class value_type>
+DomainRestrictedVariable<value_type>& DomainRestrictedVariable<value_type>::operator=(
+    const DomainRestrictedVariable<value_type>& other
+) {
+    m_domain.get().unsibscribeVariable(this);
+    m_domain = other.m_domain;
+    m_value = other.m_value;
+    other.m_domain.get().subscribeVariable(this);
+
+    return *this;
+}
+
+template<class value_type>
+DomainRestrictedVariable<value_type>& DomainRestrictedVariable<value_type>::operator=(
+    DomainRestrictedVariable<value_type>&& other
+) {
+    m_domain.get().unsubscribeVariable(this);
+    m_domain = std::move(other.m_domain);
+    m_value = std::move(other.m_value);
+    other.m_value.clear();
+
+    return *this;
+}
+
+template<class value_type>
+DomainRestrictedVariable<value_type>& DomainRestrictedVariable<value_type>::operator=(
+    const STRING_TYPE& value_name
+) {
+    if(
+        m_domain.get().m_allowed_value.end() ==
+        m_domain.get().m_allowed_values.find(value_name))
+    {
+        throw std::invalid_argument("Tried to assign to a DomainRestrictedVariable a value not in its domain.\n");
+    }
+    m_value = value_name;
+
+    return *this;
+}
+
+template<class value_type>
+void DomainRestrictedVariable<value_type>::clear() {
+    m_value.clear();
+}
+
+template<class value_type>
+bool DomainRestrictedVariable<value_type>::has_value() const {
+    return "" != m_value;
+}
+
+template<class value_type>
+const value_type& DomainRestrictedVariable<value_type>::value() const {
+    return m_domain.get().m_allowed_value.find(m_value)->second;
+}
+
+template<class value_type>
+DomainRestrictedVariable<value_type>::operator const value_type &() const {
+    return m_domain.get().m_allowed_value.find(m_value)->second;
+}
+
+template<class value_type>
+void DomainRestrictedVariable<value_type>::deletionNotice(std::string to_delete) {
+    if(m_value == to_delete) {
+        m_value.clear();
+    }
+}
+
+template<class value_type>
+void DomainRestrictedVariable<value_type>::replacement_notice(
+    std::string to_replace,
+    std::string replacement
+) {
+    if(m_value == to_replace) {
+        m_value = replacement;
+    }
+}
+
+template<class value_type>
+bool operator==(
+    const DomainRestrictedVariable<value_type>& lhs,
+    const DomainRestrictedVariable<value_type>& rhs
+) {
+    return lhs.m_domain.get() == rhs.m_domain.get() && lhs.m_value == rhs.m_value;
+}
+template<class value_type>
+bool operator!=(
+    const DomainRestrictedVariable<value_type>& lhs,
+    const DomainRestrictedVariable<value_type>& rhs
+) {
+    return !(lhs == rhs);
+}
+template<class value_type>
+bool operator<(
+    const DomainRestrictedVariable<value_type>& lhs,
+    const DomainRestrictedVariable<value_type>& rhs
+) {
+    return lhs.m_domain.get() == rhs.m_domain.get() && lhs.m_value < rhs.m_value;
+}
+template<class value_type>
+bool operator>(
+    const DomainRestrictedVariable<value_type>& lhs,
+    const DomainRestrictedVariable<value_type>& rhs
+) {
+    return rhs < lhs;
+}
+template<class value_type>
+bool operator<=(
+    const DomainRestrictedVariable<value_type>& lhs,
+    const DomainRestrictedVariable<value_type>& rhs
+) {
+    return !(lhs > rhs);
+}
+template<class value_type>
+bool operator>=(
+    const DomainRestrictedVariable<value_type>& lhs,
+    const DomainRestrictedVariable<value_type>& rhs
+) {
+    return !(lhs < rhs);
 }
 
 #undef STRING_TYPE
