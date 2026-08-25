@@ -212,9 +212,13 @@ template<class value_type>
 VariableDomain<value_type>::VariableDomain(
     std::initializer_list<std::pair<STRING_TYPE, value_type>> ilist
 ):
-    m_allowed_values(ilist),
+    m_allowed_values(),
     m_managed_variables()
-{}
+{
+    for(auto& item : ilist) {
+        m_allowed_values.emplace(item.first, item.second);
+    }
+}
 template<class value_type>
 template<class InputIt>
 VariableDomain<value_type>::VariableDomain(
@@ -457,7 +461,8 @@ template<class value_type>
 void VariableDomain<value_type>::unsubscribeVariable(
     DomainRestrictedVariable<value_type>* ptr
 ) {
-    std::remove(m_managed_variables.begin(), m_managed_variables.end(), ptr);
+    auto res = std::remove(m_managed_variables.begin(), m_managed_variables.end(), ptr);
+    m_managed_variables.erase(res, m_managed_variables.end());
 }
 
 template<class value_type>
