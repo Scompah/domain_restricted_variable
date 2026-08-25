@@ -581,7 +581,7 @@ void DomainRestrictedVariable<value_type>::clear() {
 
 template<class value_type>
 bool DomainRestrictedVariable<value_type>::has_value() const {
-    return "" != m_value;
+    return !m_value.empty();
 }
 
 template<class value_type>
