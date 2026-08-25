@@ -119,8 +119,8 @@ class VariableDomain {
     void subscribeVariable(DomainRestrictedVariable<value_type>* ptr);
     void unsubscribeVariable(DomainRestrictedVariable<value_type>* ptr);
 
-    void deletionNotice(value_type* to_delete);
-    void replacement_notice(value_type* to_replace, value_type* replacement);
+    void deletionNotice(STRING_TYPE to_delete);
+    void replacement_notice(STRING_TYPE to_replace, STRING_TYPE replacement);
 };
 
 template<class value_type>
@@ -201,10 +201,10 @@ class DomainRestrictedVariable {
     private:
     friend class VariableDomain<value_type>;
     std::reference_wrapper<VariableDomain<value_type>> m_domain;
-    std::string m_value;
+    STRING_TYPE m_value;
 
-    void deletionNotice(std::string to_delete);
-    void replacement_notice(std::string to_replace, std::string replacement);
+    void deletionNotice(STRING_TYPE to_delete);
+    void replacement_notice(STRING_TYPE to_replace, STRING_TYPE replacement);
 };
 
 //VariableDomain::Constructor
@@ -466,7 +466,7 @@ void VariableDomain<value_type>::unsubscribeVariable(
 }
 
 template<class value_type>
-void VariableDomain<value_type>::deletionNotice(value_type* to_delete) {
+void VariableDomain<value_type>::deletionNotice(STRING_TYPE to_delete) {
     for(auto& var : m_managed_variables) {
         var->deletionNotice(to_delete);
     }
@@ -474,7 +474,7 @@ void VariableDomain<value_type>::deletionNotice(value_type* to_delete) {
 
 template<class value_type>
 void VariableDomain<value_type>::replacement_notice(
-    value_type* to_replace, value_type* replacement
+    STRING_TYPE to_replace, STRING_TYPE replacement
 ) {
     for(auto& var : m_managed_variables) {
         var->replacementNotice(to_replace, replacement);
@@ -596,7 +596,7 @@ DomainRestrictedVariable<value_type>::operator const value_type &() const {
 }
 
 template<class value_type>
-void DomainRestrictedVariable<value_type>::deletionNotice(std::string to_delete) {
+void DomainRestrictedVariable<value_type>::deletionNotice(STRING_TYPE to_delete) {
     if(m_value == to_delete) {
         m_value.clear();
     }
@@ -604,8 +604,8 @@ void DomainRestrictedVariable<value_type>::deletionNotice(std::string to_delete)
 
 template<class value_type>
 void DomainRestrictedVariable<value_type>::replacement_notice(
-    std::string to_replace,
-    std::string replacement
+    STRING_TYPE to_replace,
+    STRING_TYPE replacement
 ) {
     if(m_value == to_replace) {
         m_value = replacement;
