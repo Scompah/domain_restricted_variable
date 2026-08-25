@@ -565,7 +565,7 @@ DomainRestrictedVariable<value_type>& DomainRestrictedVariable<value_type>::oper
     const STRING_TYPE& value_name
 ) {
     if(
-        m_domain.get().m_allowed_value.end() ==
+        m_domain.get().m_allowed_values.end() ==
         m_domain.get().m_allowed_values.find(value_name))
     {
         throw std::invalid_argument("Tried to assign to a DomainRestrictedVariable a value not in its domain.\n");
@@ -587,12 +587,12 @@ bool DomainRestrictedVariable<value_type>::has_value() const {
 
 template<class value_type>
 const value_type& DomainRestrictedVariable<value_type>::value() const {
-    return m_domain.get().m_allowed_value.find(m_value)->second;
+    return m_domain.get().m_allowed_values.find(m_value)->second;
 }
 
 template<class value_type>
 DomainRestrictedVariable<value_type>::operator const value_type &() const {
-    return m_domain.get().m_allowed_value.find(m_value)->second;
+    return m_domain.get().m_allowed_values.find(m_value)->second;
 }
 
 template<class value_type>
