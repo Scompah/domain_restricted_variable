@@ -47,7 +47,6 @@ class VariableDomain {
     using const_reverse_iterator = typename storage_type::const_reverse_iterator;
     using size_type = typename storage_type::size_type;
 
-    private:
     VariableDomain(
         std::initializer_list<std::pair<STRING_TYPE, value_type>> ilist = {}
     );
