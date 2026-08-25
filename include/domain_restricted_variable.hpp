@@ -501,7 +501,7 @@ DomainRestrictedVariable<value_type>::DomainRestrictedVariable(
     VariableDomain<value_type>& domain
 ):
     m_domain(domain),
-    m_value(nullptr)
+    m_value()
 {
     m_domain.get().subscribeVariable(this);
 }
