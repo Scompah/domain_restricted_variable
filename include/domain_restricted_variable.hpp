@@ -354,11 +354,10 @@ bool VariableDomain<value_type>::emplaceValue(
 template<class value_type>
 bool VariableDomain<value_type>::removeValue(const STRING_TYPE& name) {
     auto it = m_allowed_values.find(name);
-    if(it == m_allowed_values.end()) {
-        deletionNotice(&(it->second));
-        return m_allowed_values.erase(it).second;
+    if(it != m_allowed_values.end()) {
+        deletionNotice(name);
     }
-    return false;
+    return m_allowed_values.erase(name);
 }
 template<class value_type>
 void VariableDomain<value_type>::removeValues(
